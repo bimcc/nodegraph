@@ -1,7 +1,8 @@
 {
   "name": "@cqbimcc/nodegraph",
-  "version": "1.2.9",
-  "description": "BIMCC 飞椽蓝图引擎",
+  "version": "1.2.10",
+  "description": "BIMCC 飞椽节点蓝图",
+  "keywords": ["蓝图","graph","nodegraph","节点图","节点","节点运行图"],
   "main": "build/js/index.js",
   "types": "src/index.ts",
   "scripts": {
@@ -13,6 +14,8 @@
   "dependencies": {
     "nanoid": "^4.0.2"    
   },
+  "homepage": "https://www.bimcc.com",
+  "repository": "https://github.com/bimcc/nodegraph",
   "devDependencies": {
     "vitepress": "^1.0.0-rc.4",
     "typescript": "^5.1.3",
