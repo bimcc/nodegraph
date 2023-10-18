@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测试</title>
+    <style>
+        .view {
+            height: calc(100%);
+            width: calc(100% );
+            border: 0;
+            margin: 0;
+            background-color: white;
+            position: absolute;
+        }
+
+        * {
+            padding: 0;
+            border: 0;
+            margin: 0;
+        }
+
+        div::-webkit-scrollbar-track {
+            box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+            -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            background-color: #f5f5f5;
+        }
+
+        div::-webkit-scrollbar {
+            width: 7px;
+            height: 7px;
+            background-color: #000;
+        }
+
+        div::-webkit-scrollbar-thumb {
+            border-radius: 10px;
+            box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+            -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+            background-color: #c8c8c8;
+        }
+
+        .ra-graph-select input::-webkit-input-placeholder {
+            /* WebKit browsers */
+            font-size: 10px;
+        }
+    </style>
+    <script src="./BimccGraph.umd.js"></script>
+</head>
+
+<body style="margin: 0;height: 100vh; width : 100vw;">
+<div id="container" class="view"></div>
+</body>
+<script type="module">
+    const viewer = new BimccGraph.GraphViewer(document.getElementById('container'), null, {
+        controlShow: false,
+        searchBoxShow: false,
+        miniMapShow: false
+    });
+    const data = {"viewPosition":{"x":0,"y":0},"version":"1.00","nodes":[{"id":"node_2341138007","type":"ConstantNumber","index":12,"_label":"数字","position":[42,28,0],"inputs":[],"outputs":[{"type":2,"label":"value","link":["link-5cLr"],"valueType":"number","options":{"isVertical":false},"defaultValue":null}],"properties":{"__function__":"ConstantNumber","value":1},"options":{}},{"id":"node_3028927060","type":"sum","index":13,"_label":"加法","position":[397,90,0],"inputs":[{"type":1,"label":"输入","link":"link-5cLr","valueType":["number"],"options":{"isVertical":false},"defaultValue":0,"allow_input":true,"value":""},{"type":1,"label":"输入","link":"link-2Qqf","valueType":["number"],"options":{"isVertical":false},"defaultValue":0,"allow_input":true,"value":""}],"outputs":[{"type":2,"label":"输出1","link":[],"valueType":"number","options":{"isVertical":false},"defaultValue":1}],"properties":{},"options":{}},{"id":"node_8845838852","type":"ConstantNumber","index":14,"_label":"数字","position":[48,187,0],"inputs":[],"outputs":[{"type":2,"label":"value","link":["link-2Qqf"],"valueType":"number","options":{"isVertical":false},"defaultValue":null}],"properties":{"__function__":"ConstantNumber","value":2},"options":{}}],"links":[["link-5cLr","node_2341138007",0,"node_3028927060",0,"number"],["link-2Qqf","node_8845838852",0,"node_3028927060",1,"number"]]}
+    viewer.deserialize(data)
+</script>
+
+</html>

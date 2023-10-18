@@ -1,0 +1,32 @@
+{
+    "compilerOptions": {
+      "target": "ES2015", //目标语法
+      "useDefineForClassFields": true, // class定义属性的位置
+      "lib": [
+        "ESNext",
+        "DOM",
+        "DOM.Iterable"
+      ], // 声明库
+      "allowJs": false, // 允许编译器编译JS
+      "skipLibCheck": true, //忽略所有的声明文件（ *.d.ts）的类型检查
+      "esModuleInterop": true, // 允许module.exports=xxx 导出，由import from 导入.因为很多老的js库使用了commonjs的导出方式，并且没有导出default属性
+      "allowSyntheticDefaultImports": true, // 允许有没有默认导出的模块导入
+      "strict": true, // 启用所有严格类型检查选项
+      "forceConsistentCasingInFileNames": true, // 禁止对同一个文件的不一致的引用，设置为true时，将强制区分大小写
+      "module": "ES2015", // 设置程序的模块系统
+      "moduleResolution": "Node", // 模块解析策略，ts默认用node的解析策略，即相对的方式导入
+      "resolveJsonModule": true, //允许导入扩展名为“.json”的模块
+      "isolatedModules": true, //将每个文件作为单独的模块（与“ts.transpileModule”类似）
+      // "noEmit": true, // 不输出文件,即编译后不会生成任何js文件
+      // "sourceMap": true,
+      "noImplicitOverride": true, // 子类继承父类方法重写时需要声明override 
+      "outDir": "build/js",
+      "rootDir": "src",
+    },
+    "include": [
+      "src/**/*.ts",
+      "src/**/*.d.ts",
+      "src/**/*.tsx",
+    ],
+    "exclude": ["node_modules"]
+  }

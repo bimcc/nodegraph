@@ -1,0 +1,15 @@
+node_modules
+yarn.lock
+dist
+web-dist
+.parcel-cache
+.cache
+output
+package-lock.json
+.vscode
+yarn-error.log
+test/models
+test/instances
+src copy/
+docs/.vitepress/cache
+.idea

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>测试</title>
+		<style>
+			.view {
+				height: calc(100%);
+				width: calc(100%);
+				border: 0;
+				margin: 0;
+				background-color: white;
+				position: absolute;
+			}
+
+			* {
+				padding: 0;
+				border: 0;
+				margin: 0;
+			}
+
+			div::-webkit-scrollbar-track {
+				box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+				-webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+				border-radius: 10px;
+				background-color: #f5f5f5;
+			}
+
+			div::-webkit-scrollbar {
+				width: 7px;
+				height: 7px;
+				background-color: #000;
+			}
+
+			div::-webkit-scrollbar-thumb {
+				border-radius: 10px;
+				box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+				-webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+				background-color: #c8c8c8;
+			}
+
+			.ra-graph-select input::-webkit-input-placeholder {
+				/* WebKit browsers */
+				font-size: 10px;
+			}
+		</style>
+		<script src="./BimccGraph.umd.js"></script>
+	</head>
+
+	<body style="margin: 0;height: 100vh; width : 100vw;">
+		<div id="container" class="view"></div>
+	</body>
+	<script type="module">
+		const viewer = new BimccGraph.GraphViewer(document.getElementById('container'));
+		const data = JSON.parse("{\"viewPosition\":{\"x\":0,\"y\":0},\"version\":\"1.00\",\"nodes\":[{\"id\":\"node_1388246788\",\"type\":\"ConstantNumber\",\"index\":0,\"_label\":\"数字\",\"position\":[38,30,0],\"inputs\":[],\"outputs\":[{\"type\":2,\"label\":\"value\",\"link\":[\"link-6RP8\"],\"valueType\":\"number\",\"options\":{\"isVertical\":false},\"defaultValue\":null}],\"properties\":{\"__function__\":\"ConstantNumber\",\"value\":0},\"options\":{\"nodeColor\":\"#553355\",\"nodeTitleColor\":\"#332233\",\"nodeFontColor\":\"rgb(255, 255, 255)\"}},{\"id\":\"node_4105271594\",\"type\":\"ConstantNumber\",\"index\":1,\"_label\":\"数字\",\"position\":[9,121,0],\"inputs\":[],\"outputs\":[{\"type\":2,\"label\":\"value\",\"link\":[\"link-afhM\"],\"valueType\":\"number\",\"options\":{\"isVertical\":false},\"defaultValue\":null}],\"properties\":{\"__function__\":\"ConstantNumber\",\"value\":0},\"options\":{\"nodeColor\":\"#553355\",\"nodeTitleColor\":\"#332233\",\"nodeFontColor\":\"rgb(255, 255, 255)\"}},{\"id\":\"node_3225399784\",\"type\":\"ConstantNumber\",\"index\":2,\"_label\":\"数字\",\"position\":[29,224,0],\"inputs\":[],\"outputs\":[{\"type\":2,\"label\":\"value\",\"link\":[\"link-8eg3\"],\"valueType\":\"number\",\"options\":{\"isVertical\":false},\"defaultValue\":null}],\"properties\":{\"__function__\":\"ConstantNumber\",\"value\":0},\"options\":{\"nodeColor\":\"#553355\",\"nodeTitleColor\":\"#332233\",\"nodeFontColor\":\"rgb(255, 255, 255)\"}},{\"id\":\"node_6042798067\",\"type\":\"subGraph\",\"index\":3,\"_label\":\"子图\",\"position\":[346,100,0],\"inputs\":[{\"type\":1,\"label\":\"输入项\",\"link\":\"link-6RP8\",\"valueType\":[\"any\"],\"options\":{\"remove\":true,\"isVertical\":false},\"defaultValue\":null,\"allow_input\":false,\"inputWidgetType\":\"input\",\"value\":\"\"},{\"type\":1,\"label\":\"输入项\",\"link\":\"link-afhM\",\"valueType\":[\"any\"],\"options\":{\"remove\":true,\"isVertical\":false},\"defaultValue\":null,\"allow_input\":false,\"inputWidgetType\":\"input\",\"value\":\"\"},{\"type\":1,\"label\":\"输入项\",\"link\":\"link-8eg3\",\"valueType\":[\"any\"],\"options\":{\"remove\":true,\"isVertical\":false},\"defaultValue\":null,\"allow_input\":false,\"inputWidgetType\":\"input\",\"value\":\"\"}],\"outputs\":[{\"type\":2,\"label\":\"输出项\",\"link\":[],\"valueType\":\"any\",\"options\":{\"remove\":true,\"isVertical\":false},\"defaultValue\":null}],\"properties\":{},\"options\":{\"addInput\":true,\"addOutput\":true,\"nodeColor\":\"#000000\",\"nodeTitleColor\":\"#222222\",\"nodeFontColor\":\"rgb(255, 255, 255)\"},\"subGraph\":{\"version\":\"1.00\",\"nodes\":[{\"id\":\"node_6001407595\",\"type\":\"subGraphInput\",\"index\":0,\"_label\":\"子图输出\",\"position\":[18,4,0],\"inputs\":[],\"outputs\":[{\"type\":2,\"label\":\"输入项\",\"link\":[\"link-iop8\"],\"valueType\":\"any\",\"options\":{\"isVertical\":false},\"defaultValue\":null}],\"properties\":{},\"options\":{\"nodeColor\":\"#E91E63\",\"nodeTitleColor\":\"#FF5722\",\"nodeFontColor\":\"#FFFFFF\"},\"subGraphSlotIndex\":0,\"subGraphSlotNodeId\":\"node_6042798067\"},{\"id\":\"node_0077528698\",\"type\":\"subGraphInput\",\"index\":1,\"_label\":\"子图输出\",\"position\":[20,89,0],\"inputs\":[],\"outputs\":[{\"type\":2,\"label\":\"输入项\",\"link\":[\"link-c17Q\"],\"valueType\":\"any\",\"options\":{\"isVertical\":false},\"defaultValue\":null}],\"properties\":{},\"options\":{\"nodeColor\":\"#553355\",\"nodeTitleColor\":\"#332233\",\"nodeFontColor\":\"rgb(255, 255, 255)\"},\"subGraphSlotIndex\":1,\"subGraphSlotNodeId\":\"node_6042798067\"},{\"id\":\"node_7685859035\",\"type\":\"subGraphInput\",\"index\":2,\"_label\":\"子图输出\",\"position\":[19,182,0],\"inputs\":[],\"outputs\":[{\"type\":2,\"label\":\"输入项\",\"link\":[\"link-_wKH\"],\"valueType\":\"any\",\"options\":{\"isVertical\":false},\"defaultValue\":null}],\"properties\":{},\"options\":{\"nodeColor\":\"#553355\",\"nodeTitleColor\":\"#332233\",\"nodeFontColor\":\"rgb(255, 255, 255)\"},\"subGraphSlotIndex\":2,\"subGraphSlotNodeId\":\"node_6042798067\"},{\"id\":\"node_1860643507\",\"type\":\"subGraphOutput\",\"index\":3,\"_label\":\"子图输入\",\"position\":[323,84,0],\"inputs\":[{\"type\":1,\"label\":\"输出项\",\"link\":\"link-Z0gQ\",\"valueType\":[\"any\"],\"options\":{\"isVertical\":false},\"defaultValue\":null,\"allow_input\":false,\"inputWidgetType\":\"input\",\"value\":\"\"}],\"outputs\":[],\"properties\":{},\"options\":{\"nodeColor\":\"#FFC0CB\",\"nodeTitleColor\":\"#FF69B4\",\"nodeFontColor\":\"#000000\"},\"subGraphSlotIndex\":0,\"subGraphSlotNodeId\":\"node_6042798067\"},{\"id\":\"node_2815286799\",\"type\":\"sum\",\"index\":5,\"_label\":\"加法\",\"position\":[168,16,0],\"inputs\":[{\"type\":1,\"label\":\"输入\",\"link\":\"link-iop8\",\"valueType\":[\"number\"],\"options\":{\"isVertical\":false},\"defaultValue\":0,\"allow_input\":false,\"inputWidgetType\":\"input\",\"value\":\"\"},{\"type\":1,\"label\":\"输入\",\"link\":\"link-c17Q\",\"valueType\":[\"number\"],\"options\":{\"isVertical\":false},\"defaultValue\":0,\"allow_input\":false,\"inputWidgetType\":\"input\",\"value\":\"\"}],\"outputs\":[{\"type\":2,\"label\":\"输出1\",\"link\":[\"link-Vb5A\"],\"valueType\":\"number\",\"options\":{\"isVertical\":false},\"defaultValue\":null}],\"properties\":{},\"options\":{\"nodeColor\":\"#8E44AD\",\"nodeTitleColor\":\"#9B59B6\",\"nodeFontColor\":\"#FFFFFF\"}},{\"id\":\"node_0155093125\",\"type\":\"sum\",\"index\":6,\"_label\":\"加法\",\"position\":[166,135,0],\"inputs\":[{\"type\":1,\"label\":\"输入\",\"link\":\"link-Vb5A\",\"valueType\":[\"number\"],\"options\":{\"isVertical\":false},\"defaultValue\":0,\"allow_input\":false,\"inputWidgetType\":\"input\",\"value\":\"\"},{\"type\":1,\"label\":\"输入\",\"link\":\"link-_wKH\",\"valueType\":[\"number\"],\"options\":{\"isVertical\":false},\"defaultValue\":0,\"allow_input\":false,\"inputWidgetType\":\"input\",\"value\":\"\"}],\"outputs\":[{\"type\":2,\"label\":\"输出1\",\"link\":[\"link-Z0gQ\"],\"valueType\":\"number\",\"options\":{\"isVertical\":false},\"defaultValue\":null}],\"properties\":{},\"options\":{\"nodeColor\":\"#8E44AD\",\"nodeTitleColor\":\"#9B59B6\",\"nodeFontColor\":\"#FFFFFF\"}}],\"links\":[[\"link-iop8\",\"node_6001407595\",0,\"node_2815286799\",0,\"any\"],[\"link-c17Q\",\"node_0077528698\",0,\"node_2815286799\",1,\"any\"],[\"link-Vb5A\",\"node_2815286799\",0,\"node_0155093125\",0,\"number\"],[\"link-_wKH\",\"node_7685859035\",0,\"node_0155093125\",1,\"any\"],[\"link-Z0gQ\",\"node_0155093125\",0,\"node_1860643507\",0,\"number\"]]}}],\"links\":[[\"link-6RP8\",\"node_1388246788\",0,\"node_6042798067\",0,\"number\"],[\"link-afhM\",\"node_4105271594\",0,\"node_6042798067\",1,\"number\"],[\"link-8eg3\",\"node_3225399784\",0,\"node_6042798067\",2,\"number\"]]}")
+		class Sum extends BimccGraph.Node {
+			static NodeType = "sum"; //节点类型
+			static NodeLabel = "加法"; //节点显示名
+			static NodePath = "计算节点"; //节点路径
+
+			constructor() {
+
+				super();
+
+				const i0 = this.addInput({
+					label: '输入',
+					valueType: ['number'],
+					defaultValue: 0,
+				});
+
+				const i1 = this.addInput({
+					label: '输入',
+					valueType: ['number'],
+					defaultValue: 0,
+				});
+
+				const output = this.addOutput({
+					label: "输出1",
+					valueType: 'number',
+				});
+
+				output.getLabel = () => {
+					if (i0.link && i1.link) {
+						return i0.link.origin.value + i1.link.origin.value;
+					} else {
+						return '输出'
+					}
+				}
+			}
+		}
+		window.viewer = viewer
+		viewer.registerNode(Sum)
+		viewer.tools.miniMap.hide()
+		viewer.deserialize(data)
+	</script>
+
+</html>
