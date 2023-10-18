@@ -21,9 +21,15 @@ import WidgetsManager from "../shared/UI/widgets/WidgetsManager";
  * @description 视图展示蓝图
  */
 export class GraphViewer {
+    /**
+     * @description 注册节点类型
+     */
     get registerNode() {
         return this.graph.registerNode.bind(this.graph);
     }
+    /**
+     * @description 注册Widget类型
+     */
     get registerWidget() {
         return WidgetsManager.registerWidget.bind(this.graph);
     }
@@ -986,9 +992,15 @@ export class GraphViewer {
         const nr = nodeManager.getNodeRender(node.id);
         nr === null || nr === void 0 ? void 0 : nr.refresh();
     }
+    /**
+     * @description 设置只读
+     */
     setViewerMode() {
         this.events.setReadOnly(true);
     }
+    /**
+     * @description 取消只读
+     */
     disbleViewerMode() {
         this.events.setReadOnly(false);
     }

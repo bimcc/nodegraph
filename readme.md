@@ -1,10 +1,32 @@
-<!--
- * @Date: 2023-07-17 16:17:41
- * @LastEditors: asahi
- * @LastEditTime: 2023-07-17 16:31:37
- * @FilePath: \litegraph\readme.md
--->
-文件目录结构
+# 快速上手
+
+## 安装
+
+### 先决条件
+
+- 已安装 16.0 或更高版本的 Node.js, yarn
+- 熟悉命令行
+
+```
+npm i @cqbimcc/nodegraph
+```
+
+## 开始使用
+
+在页面中创建一个画布容器，然后初始化画布对象。
+
+```html
+<div id="container"></div>
+```
+
+```javascript
+import {GraphViewer} from 'nodegraph';
+
+const viewer =  new GraphViewer(document.getElementById('container'));
+```
+
+## 文件目录结构
+
 ```
 src 源码
     |-core 数据核心层

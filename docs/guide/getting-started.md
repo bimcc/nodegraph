@@ -8,10 +8,10 @@
 
 ```shell
 # npm
-$ npm install bimcc/nodegraph --save
+$ npm i @cqbimcc/nodegraph
 
 # yarn
-$ yarn add bimcc/nodegraph
+$ yarn add cqbimcc/nodegraph
 ```
 
 

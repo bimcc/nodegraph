@@ -33,13 +33,37 @@ const sidebarNetworkApi = () => {
     return [
         {
             text: '画布',
+            link: 'viewer-api',
             items: [
-                {text: '画布', link: 'viewer-api'},
-                {text: '节点', link: 'node-api'},
-                {text: '边', link: 'link-api'},
-                {text: '插槽', link: 'slot-api'},
+                {text: '参数', link: 'viewer-api#实例化'},
+                // {text: '属性', link: 'viewer-api#属性'},
+                {text: '方法', link: 'viewer-api#方法'},
             ]
-        }
+        },
+        {
+            text: '节点',
+            link: 'node-api',
+            items: [
+                {text: '属性', link: 'node-api#属性'},
+                {text: '通用方法', link: 'node-api#通用方法'},
+                {text: '可选实现方法', link: 'node-api#可选实现方法'},
+            ]
+        },
+        {
+            text: '边',
+            link: 'link-api',
+            items: [
+                {text: '属性', link: 'link-api#属性'}
+            ]
+        },
+        {
+            text: '节点插槽',
+            link: 'slot-api',
+            items: [
+                {text: '输入插槽', link: 'slot-api#输入插槽'},
+                {text: '输出插槽', link: 'slot-api#输出插槽'}
+            ]
+        },
     ]
 }
 

@@ -5,7 +5,24 @@
  * @FilePath: /bimcc-graph/src/viewer/GraphViewer.ts
  */
 
-import { Graph, INodeOptions, IVector3, NodeType, Node, IVector2, NodeId, NodeManager, SlotTypes, LinkId, InputInitOption, OutputInitOption, EventDataTypeStr, INode, NodeInput, NodeOutput } from "../core";
+import {
+  Graph,
+  INodeOptions,
+  IVector3,
+  NodeType,
+  Node,
+  IVector2,
+  NodeId,
+  NodeManager,
+  SlotTypes,
+  LinkId,
+  InputInitOption,
+  OutputInitOption,
+  EventDataTypeStr,
+  INode,
+  NodeInput,
+  NodeOutput
+} from "../core";
 import {
   ContextMenuDivider,
   IContextMenuItem,
@@ -22,18 +39,18 @@ import {
   IViewerOptions,
   IViewerTools
 } from "../interfaces";
-import { NativeDiv } from "../shared";
-import { GraphAction, GraphEventTypes, NodeRenderEvents, RenderTargetTypes, RenderTypes } from "../types";
-import { GraphEvents, MouseInfo, MouseTargetTypes } from "./GraphEvents";
-import { DomManager, SvgManager } from "../managers";
+import {NativeDiv} from "../shared";
+import {GraphAction, GraphEventTypes, NodeRenderEvents, RenderTargetTypes, RenderTypes} from "../types";
+import {GraphEvents, MouseInfo, MouseTargetTypes} from "./GraphEvents";
+import {DomManager, SvgManager} from "../managers";
 import SearchBox from "./SearchBox";
 import ControlTools from "./ControlTools";
-import { DomUIManager } from "../managers/DomUIManager";
-import { NSubGraph, NSubGraphInput, NSubGraphOutput } from "../core/graph/nodes";
+import {DomUIManager} from "../managers/DomUIManager";
+import {NSubGraph, NSubGraphInput, NSubGraphOutput} from "../core/graph/nodes";
 import MiniMap from "./MiniMap";
 import GraphWidget from "../shared/UI/widgets/GraphWidget";
 import Alert from "../shared/UI/Alert";
-import { config } from "../config";
+import {config} from "../config";
 import BaseWidget from "../shared/UI/widgets/BaseWidget";
 import * as Utils from '../Utils';
 import WidgetsManager from "../shared/UI/widgets/WidgetsManager";
@@ -42,10 +59,17 @@ import WidgetsManager from "../shared/UI/widgets/WidgetsManager";
  * @description 视图展示蓝图
  */
 export class GraphViewer {
+
+  /**
+   * @description 注册节点类型
+   */
   get registerNode() {
     return this.graph.registerNode.bind(this.graph);
   }
 
+  /**
+   * @description 注册Widget类型
+   */
   get registerWidget() {
     return WidgetsManager.registerWidget.bind(this.graph);
   }
@@ -72,7 +96,7 @@ export class GraphViewer {
   animate: number = 0
 
   //获取自定义菜单方法列表
-  customContextMenuFuncs: Array<({ position, type, target }: { position: IVector2, type: MouseTargetTypes, target: any }) => Array<IContextMenuItem | ContextMenuDivider>> = [];
+  customContextMenuFuncs: Array<({position, type, target}: { position: IVector2, type: MouseTargetTypes, target: any }) => Array<IContextMenuItem | ContextMenuDivider>> = [];
 
   constructor(rootDom: HTMLElement, graph: Graph | null = null, option: IViewerOptions = {
     controlShow: true,
@@ -182,7 +206,7 @@ export class GraphViewer {
     }
 
     //右键菜单
-    this.events.add(GraphEventTypes.OpenContextMenu, ({ position, type, target }: { position: IVector2, type: MouseTargetTypes, target: any }) => {
+    this.events.add(GraphEventTypes.OpenContextMenu, ({position, type, target}: { position: IVector2, type: MouseTargetTypes, target: any }) => {
       const uiManager: IUIManager | null = this.getRenderByTarget(RenderTargetTypes.UI) as IUIManager;
       // 判断该点击是否在当前graph的某个子图内部？
       if (this.graph.isInSubgraph(position)) {
@@ -387,7 +411,7 @@ export class GraphViewer {
       }
 
       for (let func of this.customContextMenuFuncs) {
-        menu = [...menu, ...func({ position, type, target })]
+        menu = [...menu, ...func({position, type, target})]
       }
 
       uiManager.openContextMenu(position, menu);
@@ -399,14 +423,14 @@ export class GraphViewer {
       uiManager.closeContextMenu();
     });
     // 节点拖动开始
-    this.events.add(GraphEventTypes.DragNodeStart, (position: IVector2, { nodeRender, }: { nodeRender: INodeRender, }) => {
+    this.events.add(GraphEventTypes.DragNodeStart, (position: IVector2, {nodeRender,}: { nodeRender: INodeRender, }) => {
       const scale = this.events.getScale()
       dragNodeOffset.x = position.x / scale - nodeRender.node.position.x;
       dragNodeOffset.y = position.y / scale - nodeRender.node.position.y;
     });
 
     // 节点拖动中
-    this.events.add(GraphEventTypes.DragNodeMove, (position: IVector2, { nodeRender, }: { nodeRender: INodeRender, }) => {
+    this.events.add(GraphEventTypes.DragNodeMove, (position: IVector2, {nodeRender,}: { nodeRender: INodeRender, }) => {
       const linkManager: ILinkManager | null = this.getRenderByTarget(RenderTargetTypes.Link) as ILinkManager;
       const nodeManager: INodeManager | null = this.getRenderByTarget(RenderTargetTypes.Node) as INodeManager;
       if (!linkManager || !nodeManager) return;
@@ -446,7 +470,7 @@ export class GraphViewer {
 
     //============插槽事件处理==========
     //插槽开始拖动
-    this.events.add(GraphEventTypes.DragSlotStart, (position: IVector2, { nodeRender, slotRender }: { nodeRender: INodeRender, slotRender: IInputRender | IOutputRender }) => {
+    this.events.add(GraphEventTypes.DragSlotStart, (position: IVector2, {nodeRender, slotRender}: { nodeRender: INodeRender, slotRender: IInputRender | IOutputRender }) => {
       if (this.graph.runningStatus === "running") return;
       const linkManager: ILinkManager | null = this.getRenderByTarget(RenderTargetTypes.Link) as ILinkManager;
       const nodeManager: INodeManager | null = this.getRenderByTarget(RenderTargetTypes.Node) as INodeManager;
@@ -477,7 +501,7 @@ export class GraphViewer {
     });
 
     //当插槽被拖动
-    this.events.add(GraphEventTypes.DragSlotMove, (position: IVector2, { nodeRender, slotRender }: { nodeRender: INodeRender, slotRender: IInputRender | IOutputRender }) => {
+    this.events.add(GraphEventTypes.DragSlotMove, (position: IVector2, {nodeRender, slotRender}: { nodeRender: INodeRender, slotRender: IInputRender | IOutputRender }) => {
       const linkManager: ILinkManager | null = this.getRenderByTarget(RenderTargetTypes.Link) as ILinkManager;
       const nodeManager: INodeManager | null = this.getRenderByTarget(RenderTargetTypes.Node) as INodeManager;
       if (!linkManager || !nodeManager) return;
@@ -499,7 +523,7 @@ export class GraphViewer {
     });
 
     //当插槽拖动完毕
-    this.events.add(GraphEventTypes.DragSlotEnd, (position: IVector2, { nodeRender, slotRender }: { nodeRender: INodeRender, slotRender: IInputRender | IOutputRender }) => {
+    this.events.add(GraphEventTypes.DragSlotEnd, (position: IVector2, {nodeRender, slotRender}: { nodeRender: INodeRender, slotRender: IInputRender | IOutputRender }) => {
       const linkManager: ILinkManager | null = this.getRenderByTarget(RenderTargetTypes.Link) as ILinkManager;
       if (!linkManager) return;
       linkManager.displayTempLine(false);
@@ -621,7 +645,7 @@ export class GraphViewer {
     })
 
     // 打开关联节点列表
-    this.events.add(GraphEventTypes.OpenAssociativeMenu, (position: IVector2, { nodeRender, slotRender }: { nodeRender: INodeRender, slotRender: IInputRender | IOutputRender }) => {
+    this.events.add(GraphEventTypes.OpenAssociativeMenu, (position: IVector2, {nodeRender, slotRender}: { nodeRender: INodeRender, slotRender: IInputRender | IOutputRender }) => {
       const uiManager: IUIManager | null = this.getRenderByTarget(RenderTargetTypes.UI) as IUIManager;
       if (!uiManager) return;
 
@@ -662,7 +686,7 @@ export class GraphViewer {
 
     // ===================蓝图动作================
     // 蓝图添加节点
-    this.events.add(GraphAction.AddNode, (type: NodeType, position: IVector3 = { x: 0, y: 0, z: 0 }, properties: IKeyValue = {}, options: INodeOptions = {},) => {
+    this.events.add(GraphAction.AddNode, (type: NodeType, position: IVector3 = {x: 0, y: 0, z: 0}, properties: IKeyValue = {}, options: INodeOptions = {},) => {
       this.addNode(type, position, properties, options);
     });
 
@@ -716,7 +740,7 @@ export class GraphViewer {
    * @param properties
    * @param options
    */
-  addNode(type: NodeType, position: IVector3 = { x: 0, y: 0, z: 0 }, properties: IKeyValue = {}, options: INodeOptions = {}): Node | null {
+  addNode(type: NodeType, position: IVector3 = {x: 0, y: 0, z: 0}, properties: IKeyValue = {}, options: INodeOptions = {}): Node | null {
     const node = this.graph.createNode(type, position, properties, options);
 
     const render: INodeManager | null = this.getRenderByTarget(RenderTargetTypes.Node) as INodeManager;
@@ -983,7 +1007,7 @@ export class GraphViewer {
     }
 
     // 位置差
-    const stepPos = { x: newPos.x - this.events.viewPosition.x, y: newPos.y - this.events.viewPosition.y }
+    const stepPos = {x: newPos.x - this.events.viewPosition.x, y: newPos.y - this.events.viewPosition.y}
     const animationDuration = this.graph.stepTime * 0.6; // 动画持续时间（毫秒）
     const initialPos = this.events.viewPosition; // 获取初始位置
 
@@ -1002,7 +1026,7 @@ export class GraphViewer {
       // 计算新的位置
       const newPosX = initialPos.x + (stepPos.x * (elapsedTime / animationDuration));
       const newPosY = initialPos.y + (stepPos.y * (elapsedTime / animationDuration));
-      this.events.viewPosition = { x: newPosX, y: newPosY }
+      this.events.viewPosition = {x: newPosX, y: newPosY}
       // 更新位置
       nodeManager.setPosition();
       // 判断是否继续动画
@@ -1025,7 +1049,7 @@ export class GraphViewer {
    * @description 添加获取自定义菜单的方法
    * @param func 获取方法需要返回一个menu对象
    */
-  addCustomContextMenuFunc(func: ({ position, type, target }: { position: IVector2, type: MouseTargetTypes, target: any }) => Array<IContextMenuItem | ContextMenuDivider>) {
+  addCustomContextMenuFunc(func: ({position, type, target}: { position: IVector2, type: MouseTargetTypes, target: any }) => Array<IContextMenuItem | ContextMenuDivider>) {
     this.customContextMenuFuncs.push(func);
   }
 
@@ -1061,10 +1085,16 @@ export class GraphViewer {
     nr?.refresh();
   }
 
+  /**
+   * @description 设置只读
+   */
   setViewerMode() {
     this.events.setReadOnly(true)
   }
 
+  /**
+   * @description 取消只读
+   */
   disbleViewerMode() {
     this.events.setReadOnly(false)
   }
