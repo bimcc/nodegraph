@@ -79,8 +79,8 @@ const sidebarReference = () => {
 
 export default {
     // site-level options
-    title: '飞椽蓝图引擎',
-    description: '飞椽蓝图引擎',
+    title: '飞椽节点蓝图',
+    description: '飞椽节点蓝图',
 
     head: [
         ['link', {rel: 'icon', type: 'image+xml', href: '/logo.svg'}],
@@ -113,20 +113,16 @@ export default {
                 text: '相关连接',
                 items: [
                     {
-                        text: '预览地址',
-                        link: 'https://gantt.bimcc.net/'
-                    },
-                    {
                         text: '项目源码',
-                        link: 'https://github.com/zw12579/gantt-planing-react'
+                        link: 'https://github.com/bimcc/nodegraph'
                     },
                     {
                         text: '发布计划',
-                        link: 'https://github.com/vuejs/vitepress/blob/main/CHANGELOG.md'
+                        link: 'https://github.com/bimcc/nodegraph/blob/main/CHANGELOG.md'
                     },
                     {
                         text: '更新日志',
-                        link: 'https://github.com/vuejs/vitepress/blob/main/CHANGELOG.md'
+                        link: 'https://github.com/bimcc/nodegraph/blob/main/CHANGELOG.md'
                     },
                 ]
             },

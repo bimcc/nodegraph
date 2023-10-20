@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-06-16 15:19:37
  * @LastEditors: lisushuang
- * @LastEditTime: 2023-10-12 09:39:27
+ * @LastEditTime: 2023-10-19 15:43:38
  * @FilePath: /bimcc-graph/src/viewer/GraphViewer.ts
  */
 import { Graph, Node, SlotTypes, EventDataTypeStr } from "../core";
@@ -108,7 +108,8 @@ export class GraphViewer {
         this.rootDom.setStyle({
             overflow: "hidden",
             userSelect: "none",
-            webkitUserSelect: "none"
+            webkitUserSelect: "none",
+            position: "relative"
         });
         // 阻止主画布的拖动事件，避免出现文字选择到外部元素，里面的拖动由mouse事件实现
         rootDom.addEventListener("dragstart", (e) => {

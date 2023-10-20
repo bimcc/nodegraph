@@ -25,9 +25,19 @@ import {GraphViewer} from 'nodegraph';
 const viewer =  new GraphViewer(document.getElementById('container'));
 ```
 
+## 实际使用示例
+
+![1697784430149](image/readme/1697784430149.png)
+
+## 加群讨论
+
+![1697784581074](image/readme/1697784581074.png)
+
 ## 文件目录结构
 
 ```
+
+
 src 源码
     |-core 数据核心层
         |- graph 蓝图数据结构（数据层）

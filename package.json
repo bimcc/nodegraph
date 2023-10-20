@@ -1,13 +1,15 @@
 {
   "name": "@cqbimcc/nodegraph",
-  "version": "1.2.10",
+  "version": "1.2.12",
   "description": "BIMCC 飞椽节点蓝图",
   "keywords": ["蓝图","graph","nodegraph","节点图","节点","节点运行图"],
   "main": "build/js/index.js",
   "types": "src/index.ts",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && yarn tsc"
+    "build": "vite build && yarn tsc",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs"
   },
   "author": "BIMCC",
   "license": "MIT",
