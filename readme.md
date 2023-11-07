@@ -27,11 +27,11 @@ const viewer =  new GraphViewer(document.getElementById('container'));
 
 ## 实际使用示例
 
-![1697784430149](image/readme/1697784430149.png)
+![使用示例](image/readme/1697784430149.png)
 
 ## 加群讨论
 
-![1697784581074](image/readme/1697784581074.png)
+![加群讨论](image/readme/1697784581074.jpg)
 
 ## 文件目录结构
 
