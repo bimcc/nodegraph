@@ -1,8 +1,8 @@
 /*
  * @Date: 2023-06-15 09:26:16
  * @LastEditors: lisushuang
- * @LastEditTime: 2023-10-08 11:08:16
- * @FilePath: /graph/src/core/graph/Graph.ts
+ * @LastEditTime: 2023-11-07 16:36:17
+ * @FilePath: /bimcc-graph/src/core/graph/Graph.ts
  */
 import { GraphAction, GraphEventTypes } from "../../types";
 import { DataTypeMananger, NodeManager } from '../graph';
@@ -53,6 +53,9 @@ export class Graph {
     get getNodes() {
         return this.nodeManager.getNodes.bind(this.nodeManager);
     }
+    get getChildrenNodes() {
+        return this.nodeManager.getChildrenNodes.bind(this.nodeManager);
+    }
     get getLinks() {
         return this.nodeManager.getLinks.bind(this.nodeManager);
     }
@@ -85,6 +88,12 @@ export class Graph {
          * @description 子图父节点是一个Node 子图的input和output来自于这个Node
          */
         Object.defineProperty(this, "parentNode", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: null
+        });
+        Object.defineProperty(this, "viewer", {
             enumerable: true,
             configurable: true,
             writable: true,
@@ -280,6 +289,7 @@ export class Graph {
         if (this.checkIfCanRun(nowNode, eventNode)) {
             // 聚焦到节点
             (_a = nowNode.render) === null || _a === void 0 ? void 0 : _a.events.dispatch(GraphAction.FocusOnNode, nowNode.id);
+            // 节点执行
             this.realRun(nowNode, eventNode);
             nowNode.outputs.forEach(output => {
                 if (output.link && output.link.length) {
@@ -492,5 +502,12 @@ export class Graph {
             }
         }
         return all;
+    }
+    /**
+     * 设置延时执行时间
+     * @param stepTime
+     */
+    setStepTime(stepTime) {
+        this.stepTime = stepTime;
     }
 }

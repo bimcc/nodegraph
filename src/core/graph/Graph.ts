@@ -1,22 +1,17 @@
 /*
  * @Date: 2023-06-15 09:26:16
  * @LastEditors: lisushuang
- * @LastEditTime: 2023-10-08 11:08:16
- * @FilePath: /graph/src/core/graph/Graph.ts
+ * @LastEditTime: 2023-11-07 16:36:17
+ * @FilePath: /bimcc-graph/src/core/graph/Graph.ts
  */
-import {GraphAction, GraphEventTypes} from "../../types";
+import {GraphAction, GraphEventTypes, NodeEvents} from "../../types";
 import {DataTypeMananger, NodeManager, Node, NodeInput} from '../graph';
 import {EventDataTypeStr, ExternalGraph, INode, ISerializeObject, IVector2, SerGraph} from "../interfaces";
 import {config} from '../../config';
 import {nanoid} from "nanoid";
 import {IKeyType} from "../../interfaces";
 import GraphWidget from "../../shared/UI/widgets/GraphWidget";
-import BaseWidget from "../../shared/UI/widgets/BaseWidget";
-import ArrayWidget from "../../shared/UI/widgets/ArrayWidget";
-import InputWidget from "../../shared/UI/widgets/InputWidget";
-import SelectWidget from "../../shared/UI/widgets/SelectWidget";
-import SwitchWidget from "../../shared/UI/widgets/SwitchWidget";
-import { GraphViewer } from "../../viewer";
+import {GraphViewer} from "../../viewer";
 
 /**
  * @description 蓝图基类
@@ -26,11 +21,13 @@ export class Graph implements ISerializeObject {
   subGraphType = 'subGraph';
   subGraphInputType = 'subGraphInput';
   subGraphOutputType = 'subGraphOutput';
-  
+
   /**
    * @description 子图父节点是一个Node 子图的input和output来自于这个Node
    */
   parentNode: Node | null = null;
+
+  viewer:GraphViewer|null = null;
 
   /**
    * @description 作为子图时的输入
@@ -105,6 +102,10 @@ export class Graph implements ISerializeObject {
 
   get getNodes() {
     return this.nodeManager.getNodes.bind(this.nodeManager);
+  }
+
+  get getChildrenNodes() {
+    return this.nodeManager.getChildrenNodes.bind(this.nodeManager);
   }
 
   get getLinks() {
@@ -245,6 +246,7 @@ export class Graph implements ISerializeObject {
     if (this.checkIfCanRun(nowNode, eventNode)) {
       // 聚焦到节点
       nowNode.render?.events.dispatch(GraphAction.FocusOnNode, nowNode.id);
+      // 节点执行
       this.realRun(nowNode, eventNode);
       nowNode.outputs.forEach(output => {
         if (output.link && output.link.length) {
@@ -442,7 +444,7 @@ export class Graph implements ISerializeObject {
     return false;
   }
 
-  getAllSubGraph():Array<GraphViewer>{
+  getAllSubGraph(): Array<GraphViewer> {
     const nodes = this.getNodes();
     if (!nodes.length) return [];
     let all = []
@@ -454,5 +456,13 @@ export class Graph implements ISerializeObject {
       }
     }
     return all;
+  }
+
+  /**
+   * 设置延时执行时间
+   * @param stepTime
+   */
+  setStepTime(stepTime: number) {
+    this.stepTime = stepTime;
   }
 }

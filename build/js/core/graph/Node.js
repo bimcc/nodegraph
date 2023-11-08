@@ -4,6 +4,7 @@ import { customAlphabet } from "nanoid";
 import { Signals } from "../../event";
 import WidgetsManager from "../../shared/UI/widgets/WidgetsManager";
 import SelectWidget from '../../shared/UI/widgets/SelectWidget';
+import GraphWidget from "../../shared/UI/widgets/GraphWidget";
 /**
  * @description 节点类
  */
@@ -39,7 +40,7 @@ export class Node {
             enumerable: true,
             configurable: true,
             writable: true,
-            value: null
+            value: void 0
         });
         Object.defineProperty(this, "id", {
             enumerable: true,
@@ -75,7 +76,7 @@ export class Node {
             enumerable: true,
             configurable: true,
             writable: true,
-            value: null
+            value: void 0
         });
         Object.defineProperty(this, "inputs", {
             enumerable: true,
@@ -113,6 +114,12 @@ export class Node {
             writable: true,
             value: []
         }); //节点能添加的输出配置项
+        Object.defineProperty(this, "childrenNode", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: []
+        });
         Object.defineProperty(this, "_subGraph", {
             enumerable: true,
             configurable: true,
@@ -260,10 +267,16 @@ export class Node {
      * @param {INode} eventNode
      */
     run(eventNode = null) {
+        if (this.viewer) {
+            this.viewer.events.dispatch('NodeBeforeExecute', this);
+        }
         this.beforeExecute();
         this.onExecute();
         // 修改节点状态运行
         this.afterExecute();
+        if (this.viewer) {
+            this.viewer.events.dispatch('NodeAfterExecute', this);
+        }
         // next
         // this.doNext(eventNode);
     }
@@ -350,6 +363,7 @@ export class Node {
      * @description 序列化一个节点
      */
     serialize() {
+        var _a, _b;
         const inps = [];
         const outs = [];
         const options = {};
@@ -364,6 +378,10 @@ export class Node {
         for (let output of this.outputs) {
             outs.push(output.serialize());
         }
+        // @ts-ignore
+        options['clientWidth'] = (_a = this.render) === null || _a === void 0 ? void 0 : _a.root.getClientWidth();
+        // @ts-ignore
+        options['clientHeight'] = (_b = this.render) === null || _b === void 0 ? void 0 : _b.root.getClientHeight();
         if (this.options['addInput'])
             options['addInput'] = true;
         if (this.options['addOutput'])
@@ -506,7 +524,19 @@ export class Node {
     }
     // =========== widget about ===============
     addWidget(name, option, label, propertyName) {
-        let w = WidgetsManager.createWidget(name, option);
+        let w = null;
+        if (this.runMode) {
+            if (name == GraphWidget.widgetType) {
+                option.rumMode = this.runMode;
+                w = WidgetsManager.createWidget(name, option);
+            }
+            else {
+                w = WidgetsManager.createWidget('input', this.options);
+            }
+        }
+        else {
+            w = WidgetsManager.createWidget(name, option);
+        }
         if (!w)
             return null;
         if (label) {

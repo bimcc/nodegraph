@@ -252,6 +252,18 @@ export abstract class DomBase implements IDom {
   }
 
   /**
+   * 设置元素背景颜色/图
+   * @param background
+   * @param type
+   */
+  setBackground(background: string,type:  'Color' | 'Image' = 'Color'): this {
+    return this.setStyle({
+      [`background${type}`]: type==='Color'?background:`url(${background})`,
+      'backgroundSize':'100% 100%'
+    });
+  }
+
+  /**
    * 设置元素属性
    * @param {string} qualifiedName 限定名
    * @param {string} value 值

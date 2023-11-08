@@ -5,7 +5,7 @@ import {LinkId, NodeId, NodeType, SlotTypes} from '../types';
 import * as NnodeTypes from "./nodes";
 import {NSubGraph} from './nodes';
 import Alert from '../../shared/UI/Alert';
-import { config } from '../../config';
+import {config} from '../../config';
 
 /**
  * @description 节点管理类
@@ -57,16 +57,16 @@ export class NodeManager implements ISerializeObject {
   createNode(type: NodeType, position: IVector3 = {x: 0, y: 0, z: 0}, properties: IKeyValue = {}, options: INodeOptions = {}) {
     if (!NodeManager.nodeTypeMap[type]) return;
     const nClass = NodeManager.nodeTypeMap[type];
-
+    nClass.prototype.viewer = this.graph.viewer
     const node = new nClass();
     node._initOptions(this.graph, position, properties, options)
 
     // @mark 随机颜色
-    if(!node.options.nodeColor && config.createRandomStyleNode){
+    if (!node.options.nodeColor && config.createRandomStyleNode) {
       let color = config.getRandomColor()
-      node.setOption('nodeColor',color.nodeColor)
-      node.setOption('nodeFontColor',color.nodeFontColor)
-      node.setOption('nodeTitleColor',color.nodeTitleColor)
+      node.setOption('nodeColor', color.nodeColor)
+      node.setOption('nodeFontColor', color.nodeFontColor)
+      node.setOption('nodeTitleColor', color.nodeTitleColor)
     }
 
     this.addNode(node);
@@ -329,6 +329,9 @@ export class NodeManager implements ISerializeObject {
    * @description 反序列化节点
    */
   public deserializeNode(serData: SerNode) {
+    // @mark 动态加入 runMode 属性
+    Node.prototype.runMode = this.graph.viewer?.runMode
+
     const {id, type, position, inputs, outputs, properties, options, subGraph, index, _label} = serData;
     let nClass = NodeManager.nodeTypeMap[type];
     if (!nClass) {
@@ -337,6 +340,7 @@ export class NodeManager implements ISerializeObject {
       nClass = Node;
     }
     const node = new nClass();
+
     node._initOptions(this.graph, {
       x: position[0],
       y: position[1],
@@ -351,7 +355,7 @@ export class NodeManager implements ISerializeObject {
 
     inputs.forEach((inp, index) => {
       // 节点 输入插槽配置
-      if (node?.inputOptions && node?.inputOptions[index]){
+      if (node?.inputOptions && node?.inputOptions[index]) {
         inp = Object.assign(inp, node.inputOptions[index])
       }
       inps.push(NodeInput.deserialize(node, inp, false));
@@ -367,9 +371,9 @@ export class NodeManager implements ISerializeObject {
     this.addNode(node);
 
     if (!!index) {
-      if( index < this.nodeIndex){
+      if (index < this.nodeIndex) {
         node.index = this.nodeIndex;
-      }else{
+      } else {
         node.index = index;
       }
     }
@@ -403,7 +407,8 @@ export class NodeManager implements ISerializeObject {
 
     for (let type in NodeManager.nodeTypeMap) {
       const nClass = NodeManager.nodeTypeMap[type];
-      if(['subGraphInput','subGraphOutput'].indexOf(type) > -1){
+
+      if (['subGraphInput', 'subGraphOutput'].indexOf(type) > -1) {
         continue;
       }
       list.push({
@@ -454,5 +459,22 @@ export class NodeManager implements ISerializeObject {
       }
       node.outputs.splice(slot.index, 1);
     }
+  }
+
+  /**
+   * 递归获取子节点
+   * @param parentNode 父节点对象
+   */
+  getChildrenNodes(parentNode: Node) {
+    let childNodes: any[] = []
+    parentNode.getOutputs().forEach(output => {
+      output.link.forEach(link => {
+        let childNode = link.target.node;
+        this.getChildrenNodes(childNode)
+        childNodes.push(childNode)
+      })
+    })
+    parentNode.childrenNode = childNodes;
+    return parentNode;
   }
 }

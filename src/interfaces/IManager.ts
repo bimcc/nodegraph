@@ -1,8 +1,8 @@
 /*
  * @Date: 2023-07-13 14:44:04
- * @LastEditors: asahi
- * @LastEditTime: 2023-08-25 10:49:26
- * @FilePath: \litegraph\src\interfaces\IManager.ts
+ * @LastEditors: lisushuang
+ * @LastEditTime: 2023-11-07 16:19:47
+ * @FilePath: /bimcc-graph/src/interfaces/IManager.ts
  */
 import { Graph, INodeInput, INodeOutput, IVector2, Link, LinkId, Node, NodeId, NodeType } from '../core';
 import { NativeDiv } from '../shared';
@@ -22,7 +22,7 @@ export interface IManager {
  */
 export interface INodeManager extends IManager {
   root: NativeDiv,
-  addNode: (node: Node) => INodeRender, // 渲染一个节点
+  addNode: (node: Node) => INodeRender|null, // 渲染一个节点
   removeNode: (id: NodeId) => void, // 删除一个节点
   getNodeRender: (id: NodeId) => null | INodeRender, //获取节点渲染
   getSlotRender: (id: NodeId, index: number, isOutput: boolean) => null | IInputRender | IOutputRender, //获取插槽渲染

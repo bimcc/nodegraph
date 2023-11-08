@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-06-16 15:19:37
  * @LastEditors: lisushuang
- * @LastEditTime: 2023-10-19 15:43:38
+ * @LastEditTime: 2023-11-08 15:20:48
  * @FilePath: /bimcc-graph/src/viewer/GraphViewer.ts
  */
 
@@ -81,6 +81,11 @@ export class GraphViewer {
   rootDom: NativeDiv; //视图展示的dom节点
   graph: Graph;
 
+  /**
+   * @description: 仅运行模式，不渲染大部分dom
+   */
+  runMode:boolean = false;
+
   events: GraphEvents; // 事件总线
   managers: IKeyType<ILinkManager | INodeManager | IUIManager> = {}; //渲染器列表
   renderTargetMap: IKeyType<RenderTypes> = {  // 用指定渲染器来渲染内容
@@ -98,17 +103,27 @@ export class GraphViewer {
   //获取自定义菜单方法列表
   customContextMenuFuncs: Array<({position, type, target}: { position: IVector2, type: MouseTargetTypes, target: any }) => Array<IContextMenuItem | ContextMenuDivider>> = [];
 
-  constructor(rootDom: HTMLElement, graph: Graph | null = null, option: IViewerOptions = {
+  option: IViewerOptions;
+
+  constructor(rootDom: HTMLElement | null = null, graph: Graph | null = null, option: IViewerOptions = {
     controlShow: true,
     searchBoxShow: true,
     miniMapShow: true,
+    nodeIndexShow: true,
     readonly: false,
   }) {
 
     WidgetsManager.initDefaultWidget()
 
     this.rootDom = new NativeDiv();
-    this.rootDom.DOM = rootDom;
+
+    if(!rootDom){
+      this.runMode = true
+      rootDom = this.rootDom.DOM
+    }
+    
+    rootDom = rootDom ?? this.rootDom.DOM;
+    this.rootDom.DOM = rootDom
     this.rootDom.setStyle({
       overflow: "hidden",
       userSelect: "none",
@@ -122,13 +137,14 @@ export class GraphViewer {
     })
 
     this.graph = graph ?? new Graph();
+    this.graph.viewer = this;
     this.events = new GraphEvents(this.rootDom, this);
-    // 只读模式, 禁止执行事件
-    if (option?.readonly) {
-      this.events.setReadOnly(true);
-    }
 
-    const managers = [SvgManager, DomManager, DomUIManager];
+    let managers = [SvgManager, DomManager, DomUIManager];
+    
+    if(this.runMode){
+      managers = [DomManager]
+    }
 
     this.rootDom.setId(this.graph.id)
     this.rootDom.setAttribute('graph-id', this.graph.id);
@@ -144,21 +160,34 @@ export class GraphViewer {
 
     this.initEventListener();
 
+    // option 默认值
+    const {controlShow = true, searchBoxShow = true, miniMapShow = true, nodeIndexShow = true, readonly = false} = option
+    this.option = {controlShow, searchBoxShow, miniMapShow, nodeIndexShow, readonly};
+
+    // 只读模式, 禁止执行事件
+    if (this.option.readonly) {
+      this.events.setReadOnly(true);
+    }
+
+    if(this.runMode){
+      return 
+    }
+
     // 搜索面板
-    if (option.searchBoxShow) {
+    if (this.option.searchBoxShow) {
       let search = new SearchBox(this);
       this.rootDom.add(search)
       this.tools.searchBox = search;
     }
     // 控制面板
-    if (option.controlShow) {
+    if (this.option.controlShow) {
       let ctrl = new ControlTools(this.graph, this.events)
       this.rootDom.add(ctrl);
       this.tools.control = ctrl;
     }
 
     // 小地图
-    if (option.miniMapShow) {
+    if (this.option.miniMapShow) {
       let minimap = new MiniMap(this);
       this.rootDom.add(minimap);
       this.tools.miniMap = minimap;
@@ -167,6 +196,15 @@ export class GraphViewer {
     // 子图中不显示小地图，但元素要有
     if (this.graph.parentNode) {
       this.tools.miniMap?.hide()
+    }
+
+    // 背景色
+    if (option?.backgroundColor) {
+      this.setBackground(option.backgroundColor, 'Color')
+    }
+    // 背景图
+    if (option?.backgroundImage) {
+      this.setBackground(option.backgroundImage, 'Image')
     }
   }
 
@@ -888,6 +926,7 @@ export class GraphViewer {
    * @param { boolean } needFocus 是否自动聚焦到第一个节点
    */
   refresh(needFocus: boolean = false) {
+    
     // todo bug 清空原本渲染的内容
     // 开始恢复节点渲染
     const nodes = this.graph.getNodes();
@@ -900,6 +939,10 @@ export class GraphViewer {
       element.setViewer(this);
     });
 
+    // @mark 运行模式不再进行后续设置
+    if(this.runMode){
+      return ;
+    }
     // 开始恢复连线渲染实例
     const links = this.graph.getLinks();
     const linkManager: ILinkManager | null = this.getRenderByTarget(RenderTargetTypes.Link) as ILinkManager;
@@ -1100,6 +1143,10 @@ export class GraphViewer {
     this.events.setReadOnly(false)
   }
 
+  setBackground(background: string, type: 'Color' | 'Image' = 'Color') {
+    this.rootDom.setBackground(background, type);
+  }
+
   /**
    * @description 合并到子图
    */
@@ -1232,5 +1279,40 @@ export class GraphViewer {
     for (let nr of renders) {
       this.removeNode(nr.node.id);
     }
+  }
+
+  /**
+   * 获取节点下级节点
+   * @param node
+   */
+  getChildrenNodes(node: Node | null = null) {
+    let allNode:Array<Node> = [];
+    if (node){
+      allNode.push(this.graph.getChildrenNodes(node))
+    }else{
+      // 所有的Node
+      let nodes = this.graph.getNodes();
+      // 找到没有输入的Node
+      nodes.forEach(node => {
+        // 没有inputs的节点
+        if (node.inputs.length == 0) {
+          allNode.push(this.graph.getChildrenNodes(node))
+          return;
+        }
+
+        // 有inputs 但全都没连线
+        let hasInputLink = false;
+        node.inputs.forEach(input => {
+          if (input.link) {
+            hasInputLink = true;
+          }
+        })
+        if (!hasInputLink) {
+          allNode.push(this.graph.getChildrenNodes(node))
+        }
+      })
+    }
+
+    return allNode
   }
 }

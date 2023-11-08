@@ -59,6 +59,10 @@ export class DomManager {
      * @returns
      */
     addNode(node) {
+        // @mark 阻止在纯运行模式创建节点dom
+        if (this.events.viewer.runMode) {
+            return null;
+        }
         if (this.nodeMap[node.id])
             return this.nodeMap[node.id]; //可能已经渲染过了
         const rNode = new DomNodeRender(this.root, node, this.events.viewPosition, this.events);

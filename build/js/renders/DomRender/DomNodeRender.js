@@ -193,6 +193,13 @@ export class DomNodeRender {
                 cursor: "pointer",
                 color: (_b = this.node.options['nodeFontColor']) !== null && _b !== void 0 ? _b : config.style.NodeFontColor,
             });
+            // 节点拖拽宽高还原
+            if (node.getOption('clientWidth')) {
+                root.setWidth(node.getOption('clientWidth'), 'min');
+            }
+            if (node.getOption('clientHeight')) {
+                root.setHeight(node.getOption('clientHeight'), 'min');
+            }
             title.setWidth('100%');
             title.setHeight(titleHeight, 'min');
             title.setStyle({
@@ -442,7 +449,7 @@ export class DomNodeRender {
         const { root, title, body, inputsDom, outputsDom } = this;
         this.setPosition(this.node.position.x, this.node.position.y);
         title.innerText(this.node.label);
-        if (DomNodeRender.showNodeIndex) {
+        if (this.events.viewer.option.nodeIndexShow && DomNodeRender.showNodeIndex) {
             // @mark 给title加上左侧的index显示
             let indexBox = new NativeDiv();
             indexBox.innerText((_a = this.node.index.toString()) !== null && _a !== void 0 ? _a : "\\");

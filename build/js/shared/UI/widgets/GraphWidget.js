@@ -1,8 +1,8 @@
 /*
  * @Date: 2023-08-07 16:17:24
  * @LastEditors: lisushuang
- * @LastEditTime: 2023-09-21 17:50:07
- * @FilePath: /graph/src/shared/UI/widgets/GraphWidget.ts
+ * @LastEditTime: 2023-11-08 15:00:05
+ * @FilePath: /bimcc-graph/src/shared/UI/widgets/GraphWidget.ts
  */
 import { Graph } from "../../../core";
 import { GraphViewer } from "../../../viewer";
@@ -123,7 +123,12 @@ class GraphWidget extends BaseWidget {
         this.add(minDom);
         this.add(viewerDom);
         this.graph = (_a = option.graph) !== null && _a !== void 0 ? _a : new Graph();
-        this.viewer = new GraphViewer(viewerDom.DOM, this.graph);
+        if (option.rumMode) {
+            this.viewer = new GraphViewer(null, this.graph);
+        }
+        else {
+            this.viewer = new GraphViewer(viewerDom.DOM, this.graph);
+        }
         viewerDom.add(minViewerBtn);
         this.initEventListener();
         this.setMode(this.mode);
@@ -190,7 +195,9 @@ class GraphWidget extends BaseWidget {
     setGraph(g) {
         this.graph = g;
         this.viewer.graph = g;
-        this.viewer.tools.control.graph = g;
+        if (this.viewer.tools.control) {
+            this.viewer.tools.control.graph = g;
+        }
     }
     refresh(...arg) {
         this.viewer.refresh(...arg);

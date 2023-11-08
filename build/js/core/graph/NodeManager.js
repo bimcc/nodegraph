@@ -80,6 +80,7 @@ export class NodeManager {
         if (!NodeManager.nodeTypeMap[type])
             return;
         const nClass = NodeManager.nodeTypeMap[type];
+        nClass.prototype.viewer = this.graph.viewer;
         const node = new nClass();
         node._initOptions(this.graph, position, properties, options);
         // @mark 随机颜色
@@ -312,7 +313,9 @@ export class NodeManager {
      * @description 反序列化节点
      */
     deserializeNode(serData) {
-        var _a;
+        var _a, _b;
+        // @mark 动态加入 runMode 属性
+        Node.prototype.runMode = (_a = this.graph.viewer) === null || _a === void 0 ? void 0 : _a.runMode;
         const { id, type, position, inputs, outputs, properties, options, subGraph, index, _label } = serData;
         let nClass = NodeManager.nodeTypeMap[type];
         if (!nClass) {
@@ -324,7 +327,7 @@ export class NodeManager {
         node._initOptions(this.graph, {
             x: position[0],
             y: position[1],
-            z: (_a = position[2]) !== null && _a !== void 0 ? _a : 0,
+            z: (_b = position[2]) !== null && _b !== void 0 ? _b : 0,
         }, properties, options);
         node.id = id;
         node._label = _label;
@@ -424,6 +427,22 @@ export class NodeManager {
             }
             node.outputs.splice(slot.index, 1);
         }
+    }
+    /**
+     * 递归获取子节点
+     * @param parentNode 父节点对象
+     */
+    getChildrenNodes(parentNode) {
+        let childNodes = [];
+        parentNode.getOutputs().forEach(output => {
+            output.link.forEach(link => {
+                let childNode = link.target.node;
+                this.getChildrenNodes(childNode);
+                childNodes.push(childNode);
+            });
+        });
+        parentNode.childrenNode = childNodes;
+        return parentNode;
     }
 }
 Object.defineProperty(NodeManager, "nodeTypeMap", {

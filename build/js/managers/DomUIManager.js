@@ -375,6 +375,11 @@ export class DomUIManager {
             menu.push({
                 label,
                 callback: () => {
+                    // 节点坐标减去画布偏移坐标量
+                    if (node.viewer) {
+                        position.x -= node.viewer.events.viewPosition.x;
+                        position.y -= node.viewer.events.viewPosition.y;
+                    }
                     this.events.dispatch(GraphAction.AddNode, type, position);
                 }
             });

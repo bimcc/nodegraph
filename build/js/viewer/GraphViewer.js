@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-06-16 15:19:37
  * @LastEditors: lisushuang
- * @LastEditTime: 2023-10-19 15:43:38
+ * @LastEditTime: 2023-11-08 15:20:48
  * @FilePath: /bimcc-graph/src/viewer/GraphViewer.ts
  */
 import { Graph, Node, SlotTypes, EventDataTypeStr } from "../core";
@@ -36,10 +36,11 @@ export class GraphViewer {
     get registerExternalGraph() {
         return this.graph.registerExternalGraph.bind(this.graph);
     }
-    constructor(rootDom, graph = null, option = {
+    constructor(rootDom = null, graph = null, option = {
         controlShow: true,
         searchBoxShow: true,
         miniMapShow: true,
+        nodeIndexShow: true,
         readonly: false,
     }) {
         var _a;
@@ -54,6 +55,15 @@ export class GraphViewer {
             configurable: true,
             writable: true,
             value: void 0
+        });
+        /**
+         * @description: 仅运行模式，不渲染大部分dom
+         */
+        Object.defineProperty(this, "runMode", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: false
         });
         Object.defineProperty(this, "events", {
             enumerable: true,
@@ -102,8 +112,19 @@ export class GraphViewer {
             writable: true,
             value: []
         });
+        Object.defineProperty(this, "option", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
         WidgetsManager.initDefaultWidget();
         this.rootDom = new NativeDiv();
+        if (!rootDom) {
+            this.runMode = true;
+            rootDom = this.rootDom.DOM;
+        }
+        rootDom = rootDom !== null && rootDom !== void 0 ? rootDom : this.rootDom.DOM;
         this.rootDom.DOM = rootDom;
         this.rootDom.setStyle({
             overflow: "hidden",
@@ -116,12 +137,12 @@ export class GraphViewer {
             e.preventDefault();
         });
         this.graph = graph !== null && graph !== void 0 ? graph : new Graph();
+        this.graph.viewer = this;
         this.events = new GraphEvents(this.rootDom, this);
-        // 只读模式, 禁止执行事件
-        if (option === null || option === void 0 ? void 0 : option.readonly) {
-            this.events.setReadOnly(true);
+        let managers = [SvgManager, DomManager, DomUIManager];
+        if (this.runMode) {
+            managers = [DomManager];
         }
-        const managers = [SvgManager, DomManager, DomUIManager];
         this.rootDom.setId(this.graph.id);
         this.rootDom.setAttribute('graph-id', this.graph.id);
         for (let Manager of managers) {
@@ -129,20 +150,30 @@ export class GraphViewer {
             this.managers[manager.type] = manager;
         }
         this.initEventListener();
+        // option 默认值
+        const { controlShow = true, searchBoxShow = true, miniMapShow = true, nodeIndexShow = true, readonly = false } = option;
+        this.option = { controlShow, searchBoxShow, miniMapShow, nodeIndexShow, readonly };
+        // 只读模式, 禁止执行事件
+        if (this.option.readonly) {
+            this.events.setReadOnly(true);
+        }
+        if (this.runMode) {
+            return;
+        }
         // 搜索面板
-        if (option.searchBoxShow) {
+        if (this.option.searchBoxShow) {
             let search = new SearchBox(this);
             this.rootDom.add(search);
             this.tools.searchBox = search;
         }
         // 控制面板
-        if (option.controlShow) {
+        if (this.option.controlShow) {
             let ctrl = new ControlTools(this.graph, this.events);
             this.rootDom.add(ctrl);
             this.tools.control = ctrl;
         }
         // 小地图
-        if (option.miniMapShow) {
+        if (this.option.miniMapShow) {
             let minimap = new MiniMap(this);
             this.rootDom.add(minimap);
             this.tools.miniMap = minimap;
@@ -150,6 +181,14 @@ export class GraphViewer {
         // 子图中不显示小地图，但元素要有
         if (this.graph.parentNode) {
             (_a = this.tools.miniMap) === null || _a === void 0 ? void 0 : _a.hide();
+        }
+        // 背景色
+        if (option === null || option === void 0 ? void 0 : option.backgroundColor) {
+            this.setBackground(option.backgroundColor, 'Color');
+        }
+        // 背景图
+        if (option === null || option === void 0 ? void 0 : option.backgroundImage) {
+            this.setBackground(option.backgroundImage, 'Image');
         }
     }
     /**
@@ -817,6 +856,10 @@ export class GraphViewer {
             element.setRender(r);
             element.setViewer(this);
         });
+        // @mark 运行模式不再进行后续设置
+        if (this.runMode) {
+            return;
+        }
         // 开始恢复连线渲染实例
         const links = this.graph.getLinks();
         const linkManager = this.getRenderByTarget(RenderTargetTypes.Link);
@@ -1005,6 +1048,9 @@ export class GraphViewer {
     disbleViewerMode() {
         this.events.setReadOnly(false);
     }
+    setBackground(background, type = 'Color') {
+        this.rootDom.setBackground(background, type);
+    }
     /**
      * @description 合并到子图
      */
@@ -1125,5 +1171,38 @@ export class GraphViewer {
         for (let nr of renders) {
             this.removeNode(nr.node.id);
         }
+    }
+    /**
+     * 获取节点下级节点
+     * @param node
+     */
+    getChildrenNodes(node = null) {
+        let allNode = [];
+        if (node) {
+            allNode.push(this.graph.getChildrenNodes(node));
+        }
+        else {
+            // 所有的Node
+            let nodes = this.graph.getNodes();
+            // 找到没有输入的Node
+            nodes.forEach(node => {
+                // 没有inputs的节点
+                if (node.inputs.length == 0) {
+                    allNode.push(this.graph.getChildrenNodes(node));
+                    return;
+                }
+                // 有inputs 但全都没连线
+                let hasInputLink = false;
+                node.inputs.forEach(input => {
+                    if (input.link) {
+                        hasInputLink = true;
+                    }
+                });
+                if (!hasInputLink) {
+                    allNode.push(this.graph.getChildrenNodes(node));
+                }
+            });
+        }
+        return allNode;
     }
 }

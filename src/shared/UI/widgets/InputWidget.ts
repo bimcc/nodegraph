@@ -1,9 +1,9 @@
 /*
- * @LastEditors: asahi
+ * @LastEditors: lisushuang
  * @Description: 输入框
- * @FilePath: \litegraph\src\shared\UI\widgets\InputWidget.ts
+ * @FilePath: /bimcc-graph/src/shared/UI/widgets/InputWidget.ts
  * @Date: 2023-07-26 17:28:55
- * @LastEditTime: 2023-09-15 17:18:23
+ * @LastEditTime: 2023-11-08 14:50:12
  * @Author: lisushuang
  */
 

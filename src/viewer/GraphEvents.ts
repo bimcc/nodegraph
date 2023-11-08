@@ -9,7 +9,7 @@ import { IVector2 } from "../core";
 import { Signal, Signals } from "../event";
 import { IGraphMouseEvent, IInputRender, INodeRender, IOutputRender } from "../interfaces";
 import { NativeDiv } from "../shared";
-import {CustomEvetns, GraphAction, GraphEventTypes} from "../types";
+import {CustomEvetns, GraphAction, GraphEventTypes, NodeEvents} from "../types";
 import { GraphViewer } from "./GraphViewer";
 
 /**
@@ -158,6 +158,9 @@ export class GraphEvents {
       // 蓝图动作
       GraphAction.AddNode, GraphAction.RemoveNode, GraphAction.CloneNode, GraphAction.AddNodeInput, GraphAction.AddNodeOutput,
       GraphAction.FocusOnNode, GraphAction.StartRun, GraphAction.StopRun, GraphAction.RemoveNodeSlot,
+
+      // 节点事件
+      NodeEvents.BeforeExecute,NodeEvents.AfterExecute,
 
       // 供外部使用事件
       CustomEvetns.Node,CustomEvetns.Widget,

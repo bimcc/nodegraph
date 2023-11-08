@@ -6,7 +6,7 @@
  */
 import { Signals } from "../event";
 import { NativeDiv } from "../shared";
-import { CustomEvetns, GraphAction, GraphEventTypes } from "../types";
+import { CustomEvetns, GraphAction, GraphEventTypes, NodeEvents } from "../types";
 /**
  * @description 鼠标目标类型
  */
@@ -161,6 +161,8 @@ export class GraphEvents {
             // 蓝图动作
             GraphAction.AddNode, GraphAction.RemoveNode, GraphAction.CloneNode, GraphAction.AddNodeInput, GraphAction.AddNodeOutput,
             GraphAction.FocusOnNode, GraphAction.StartRun, GraphAction.StopRun, GraphAction.RemoveNodeSlot,
+            // 节点事件
+            NodeEvents.BeforeExecute, NodeEvents.AfterExecute,
             // 供外部使用事件
             CustomEvetns.Node, CustomEvetns.Widget,
         ];

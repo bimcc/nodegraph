@@ -1,8 +1,8 @@
 /*
  * @Date: 2023-07-13 14:46:54
  * @LastEditors: lisushuang
- * @LastEditTime: 2023-10-09 15:24:04
- * @FilePath: /graph/src/managers/DomManager.ts
+ * @LastEditTime: 2023-11-07 16:19:33
+ * @FilePath: /bimcc-graph/src/managers/DomManager.ts
  */
 import { IInputRender, IKeyType, INodeManager, INodeRender, IOutputRender } from "../interfaces";
 import { INode, IVector2, Node, NodeId } from '../core';
@@ -51,7 +51,11 @@ export class DomManager implements INodeManager {
    * @param node 
    * @returns 
    */
-  addNode(node: Node): INodeRender {
+  addNode(node: Node): INodeRender|null {
+    // @mark 阻止在纯运行模式创建节点dom
+    if(this.events.viewer.runMode){
+      return null;
+    }
     if (this.nodeMap[node.id]) return this.nodeMap[node.id];//可能已经渲染过了
 
     const rNode = new DomNodeRender(this.root, node, this.events.viewPosition, this.events);

@@ -71,6 +71,11 @@ export var NodeRenderEvents;
     NodeRenderEvents["Refresh"] = "NodeRenderRefresh";
     NodeRenderEvents["Down"] = "NodeRenderDown";
 })(NodeRenderEvents || (NodeRenderEvents = {}));
+export var NodeEvents;
+(function (NodeEvents) {
+    NodeEvents["BeforeExecute"] = "NodeBeforeExecute";
+    NodeEvents["AfterExecute"] = "NodeAfterExecute";
+})(NodeEvents || (NodeEvents = {}));
 export var CustomEvetns;
 (function (CustomEvetns) {
     CustomEvetns["Widget"] = "WidgetCustomEvetns";

@@ -80,6 +80,11 @@ export enum NodeRenderEvents {
   Down = 'NodeRenderDown',
 }
 
+export enum NodeEvents {
+  BeforeExecute = 'NodeBeforeExecute',
+  AfterExecute = 'NodeAfterExecute',
+}
+
 
 export enum CustomEvetns {
   Widget = 'WidgetCustomEvetns',

@@ -9,12 +9,16 @@ import { GraphViewer } from "../../viewer";
 import { Signals } from "../../event";
 import WidgetsManager from "../../shared/UI/widgets/WidgetsManager";
 import SelectWidget from '../../shared/UI/widgets/SelectWidget';
+import GraphWidget from "../../shared/UI/widgets/GraphWidget";
 
 /**
  * @description 节点类
  */
 export class Node implements INode {
-  graph: Graph | null = null;
+  // @mark 动态加入 runMode 属性
+  [runMode:string]:any;
+
+  graph: Graph | undefined;
   id: NodeId; //节点id
   index: number = 0; // 节点顺序
 
@@ -23,7 +27,7 @@ export class Node implements INode {
   events: Signals;
 
   public render: INodeRender | null = null;
-  public viewer: GraphViewer | null = null;
+  public viewer: GraphViewer | undefined
 
   inputs: Array<NodeInput> = [];
   outputs: Array<NodeOutput> = [];
@@ -32,6 +36,8 @@ export class Node implements INode {
 
   addInputsConfig: Array<InputInitOption> = []; //节点能添加的输入配置项
   addOutputsConfig: Array<OutputInitOption> = []; //节点能添加的输出配置项
+
+  childrenNode:Array<Node> = [];
 
   private _subGraph: Graph | null = null;
 
@@ -226,11 +232,17 @@ export class Node implements INode {
    * @param {INode} eventNode
    */
   run(eventNode: INode | null = null): void {
+    if (this.viewer){
+      this.viewer.events.dispatch('NodeBeforeExecute', this)
+    }
     this.beforeExecute();
     this.onExecute();
     // 修改节点状态运行
 
     this.afterExecute();
+    if (this.viewer){
+      this.viewer.events.dispatch('NodeAfterExecute', this)
+    }
     // next
     // this.doNext(eventNode);
   }
@@ -353,6 +365,11 @@ export class Node implements INode {
     for (let output of this.outputs) {
       outs.push(output.serialize());
     }
+
+    // @ts-ignore
+    options['clientWidth'] = this.render?.root.getClientWidth();
+    // @ts-ignore
+    options['clientHeight'] = this.render?.root.getClientHeight();
 
     if (this.options['addInput']) options['addInput'] = true;
     if (this.options['addOutput']) options['addOutput'] = true;
@@ -511,8 +528,17 @@ export class Node implements INode {
 
   // =========== widget about ===============
   addWidget(name: string, option?: any, label?: string,propertyName?:string): BaseWidget | null {
-    let w = WidgetsManager.createWidget(name, option)
-
+    let w: BaseWidget | null = null;
+    if(this.runMode){
+      if(name == GraphWidget.widgetType){
+        option.rumMode = this.runMode
+        w = WidgetsManager.createWidget(name, option)
+      }else{
+        w = WidgetsManager.createWidget('input',this.options)
+      }
+    }else{
+      w = WidgetsManager.createWidget(name, option)
+    }
     if (!w) return null;
     if (label) {
       w.label = label
@@ -565,7 +591,7 @@ export class Node implements INode {
 
   }
 
-  setRender(r: INodeRender) {
+  setRender(r: INodeRender|null) {
     this.render = r;
     this.renderInit(r as DomNodeRender);
   }
