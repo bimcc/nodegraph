@@ -6,7 +6,7 @@
 
 同时记得设置 viewer.graph.setStepTime(0)
 
-开始执行：viewer.grpah.start()
+开始执行：viewer.graph.start()
 
 停止执行：viewer.graph.stop()
 

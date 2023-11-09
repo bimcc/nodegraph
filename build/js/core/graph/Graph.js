@@ -453,8 +453,7 @@ export class Graph {
     }
     sendLog(node, msg = "已运行") {
         var _a;
-        console.log(`节点${node.id} [${node.label}]：${msg}`);
-        (_a = node.render) === null || _a === void 0 ? void 0 : _a.events.dispatch(GraphEventTypes.AddRunLog, { node: node, msg: msg });
+                (_a = node.render) === null || _a === void 0 ? void 0 : _a.events.dispatch(GraphEventTypes.AddRunLog, { node: node, msg: msg });
     }
     /**
      * @description 添加一个游离子图

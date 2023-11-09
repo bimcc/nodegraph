@@ -1,28 +1,37 @@
 {
   "name": "@cqbimcc/nodegraph",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "description": "BIMCC 飞椽节点蓝图",
-  "keywords": ["蓝图","graph","nodegraph","节点图","节点","节点运行图"],
+  "keywords": [
+    "蓝图",
+    "graph",
+    "nodegraph",
+    "节点图",
+    "节点",
+    "节点运行图"
+  ],
   "main": "build/js/index.js",
   "types": "src/index.ts",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && yarn tsc",
+    "build": "vite build && node build.js",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs"
   },
   "author": "BIMCC",
   "license": "MIT",
   "dependencies": {
-    "nanoid": "^4.0.2"    
+    "nanoid": "^4.0.2"
   },
   "homepage": "https://www.bimcc.com",
   "repository": "https://github.com/bimcc/nodegraph",
   "devDependencies": {
-    "vitepress": "^1.0.0-rc.4",
+    "@babel/core": "^7.22.5",
+    "glob": "^10.3.10",
+    "terser": "^5.24.0",
     "typescript": "^5.1.3",
     "vite": "^4.3.9",
     "vite-plugin-babel": "^1.1.3",
-    "@babel/core": "^7.22.5"
+    "vitepress": "^1.0.0-rc.4"
   }
 }

@@ -79,9 +79,7 @@ class MiniMap extends NativeCanvas {
      * @description: 根据鼠标相对位置设置viewPosition
      */
     setViewPosition(point) {
-        // console.log(point)
-        const { Xscale, Yscale, viewStart, viewEnd, minX, minY } = this.getViewInfo();
-        // 顶点对齐
+        //         // 顶点对齐
         let newView = { x: -minX, y: -minY };
         // 点击的地方一定是可视框的正中间
         let newLeftTop = {

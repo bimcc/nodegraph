@@ -281,8 +281,7 @@ export class DomNodeRender {
             this.events.dispatch(GraphEventTypes.NodeDown, e, this);
             // 凡点击时将本节点置于最上方
             this.setTopIndex();
-            console.log(`点击了节点【${this.node.label}】【${this.node.id}】`);
-        });
+                    });
         let clickTimer = null;
         // 触发节点外部点击事件
         this.root.onClick((e) => {
@@ -671,12 +670,7 @@ export class DomNodeRender {
     }
     setHighLight(color = "") {
         this.node.onNodeHighLight();
-        // console.log(this.getPosition())
-        if (color) {
-            this.borderBox.setStyle({
-                borderColor: color
-            });
-        }
+        //         }
         this.borderBox.show();
         if (this.node.options['notResize']) {
             this.dragSpan.hide();

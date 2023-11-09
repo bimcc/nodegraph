@@ -246,17 +246,13 @@ export class NodePanel {
                     this.body.props.push(pi);
                     break;
                 // case 'boolean':
-                //   console.log(value)
-                //   const pib = new NodePanelInput(this.body.root);
-                //   pib.input.setAttribute('type', 'checkbox');
+                //                   //   pib.input.setAttribute('type', 'checkbox');
                 //   pib.setValue(String(value), key);
                 //   pib.styles.backColor = nodeColor ?? '#4b4b4b';
                 //   pib.styles.fontColor = nodeFontColor ?? '#ffffff';
                 //   pib.refresh();
                 //   pib.onChange((value) => {
-                //     console.log(key, value)
-                //     node.setProperty(key, value);
-                //   });
+                //                     //   });
                 //   this.body.props.push(pib);
                 //   break;
             }
