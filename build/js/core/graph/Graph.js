@@ -1,7 +1,7 @@
 /*
  * @Date: 2023-06-15 09:26:16
  * @LastEditors: lisushuang
- * @LastEditTime: 2023-11-07 16:36:17
+ * @LastEditTime: 2023-11-09 18:09:18
  * @FilePath: /bimcc-graph/src/core/graph/Graph.ts
  */
 import { GraphAction, GraphEventTypes } from "../../types";
@@ -248,7 +248,9 @@ export class Graph {
         //   }, this.stepTime * index);
         //   this.runtimers.push(timer);
         // });
-        this.waitNodes = startNode;
+        startNode.forEach((item) => {
+            this.waitNodes.push({ node: item, eventNode: null });
+        });
         this.runByStep();
     }
     checkNodeRuned(node, eventNode = null) {
@@ -272,30 +274,32 @@ export class Graph {
     }
     runByStep(eventNode = null) {
         var _a, _b, _c, _d;
+        if (!this.waitNodes.length)
+            return;
         let nowNode = this.waitNodes.shift();
         if (!nowNode)
             return;
         // 当前就是事件节点自己，清空运行状态
-        if (eventNode && nowNode.id == eventNode.id && this.eventRuns[eventNode.id] && this.eventRuns[eventNode.id].length) {
-            this.eventRuns[eventNode.id].forEach(node => {
+        if (nowNode.eventNode && nowNode.node.id == nowNode.eventNode.id && this.eventRuns[nowNode.eventNode.id] && this.eventRuns[nowNode.eventNode.id].length) {
+            this.eventRuns[nowNode.eventNode.id].forEach(node => {
                 var _a;
                 (_a = node.render) === null || _a === void 0 ? void 0 : _a.cancelHighLight();
                 this.runedNodes = this.runedNodes.filter((value) => {
                     return value.id !== node.id;
                 });
             });
-            this.eventRuns[eventNode.id] = [];
+            this.eventRuns[nowNode.eventNode.id] = [];
         }
-        if (this.checkIfCanRun(nowNode, eventNode)) {
+        if (this.checkIfCanRun(nowNode.node, nowNode.eventNode)) {
             // 聚焦到节点
-            (_a = nowNode.render) === null || _a === void 0 ? void 0 : _a.events.dispatch(GraphAction.FocusOnNode, nowNode.id);
+            (_a = nowNode.node.render) === null || _a === void 0 ? void 0 : _a.events.dispatch(GraphAction.FocusOnNode, nowNode.node.id);
             // 节点执行
-            this.realRun(nowNode, eventNode);
-            nowNode.outputs.forEach(output => {
+            this.realRun(nowNode.node, nowNode.eventNode);
+            nowNode.node.outputs.forEach(output => {
                 if (output.link && output.link.length) {
                     output.link.forEach(link => {
                         if (link.target.node) {
-                            this.waitNodes.unshift(link.target.node);
+                            this.waitNodes.unshift({ node: link.target.node, eventNode: nowNode.eventNode });
                         }
                     });
                 }
@@ -303,14 +307,14 @@ export class Graph {
         }
         else {
             // 没运行的说明在等待依赖值
-            if (!this.checkNodeRuned(nowNode, eventNode)) {
-                (_b = nowNode.render) === null || _b === void 0 ? void 0 : _b.events.dispatch(GraphAction.FocusOnNode, nowNode.id);
-                (_c = nowNode.render) === null || _c === void 0 ? void 0 : _c.setHighLight(config.style.NodeHighLightColor);
-                (_d = nowNode.render) === null || _d === void 0 ? void 0 : _d.shake();
+            if (!this.checkNodeRuned(nowNode.node, nowNode.eventNode)) {
+                (_b = nowNode.node.render) === null || _b === void 0 ? void 0 : _b.events.dispatch(GraphAction.FocusOnNode, nowNode.node.id);
+                (_c = nowNode.node.render) === null || _c === void 0 ? void 0 : _c.setHighLight(config.style.NodeHighLightColor);
+                (_d = nowNode.node.render) === null || _d === void 0 ? void 0 : _d.shake();
             }
         }
         setTimeout(() => {
-            this.runByStep(eventNode);
+            this.runByStep();
         }, this.stepTime);
     }
     /**
@@ -400,11 +404,11 @@ export class Graph {
         if (this.runningStatus !== "running")
             return;
         if (!this.waitNodes.length) {
-            this.waitNodes.push(node);
-            this.runByStep(eventNode);
+            this.waitNodes.push({ node: node, eventNode: eventNode });
+            this.runByStep();
         }
         else {
-            this.waitNodes.push(node);
+            this.waitNodes.push({ node: node, eventNode: eventNode });
         }
     }
     realRun(node, eventNode = null) {
@@ -442,6 +446,9 @@ export class Graph {
         this.getNodes().forEach(node => {
             var _a;
             (_a = node.render) === null || _a === void 0 ? void 0 : _a.cancelHighLight();
+            if (node.onStop) {
+                node.onStop();
+            }
         });
         let timer = null;
         while (timer = this.runtimers.shift()) {

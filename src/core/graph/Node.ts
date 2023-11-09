@@ -620,4 +620,9 @@ export class Node implements INode {
    * @description: 当刷新时，此时一般dom已经重建完毕，可以操作dom进行修改
    */
   onRefresh?(): void;
+
+  /**
+   * @description: 当运行停止时，可能会需要一些特殊的处理以还原状态
+   */  
+  onStop?():void
 }
